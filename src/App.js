@@ -10,7 +10,8 @@ class BooksApp extends React.Component {
     books: [],
     currentList: [],
     wantToReadList: [],
-    readList: []
+    readList: [],
+    bookSearchList: []
   }
 
   componentDidMount() {
@@ -26,6 +27,13 @@ class BooksApp extends React.Component {
       });
     }
     )
+
+  }
+
+  searchBook(query) {
+    BooksAPI.search(query).then(books => {
+      this.setState({bookSearchList: books ? books : {error: 'No books found'}});
+    })
   }
   
 
@@ -34,7 +42,7 @@ class BooksApp extends React.Component {
     const {currentList, wantToReadList, readList} = this.state;
     return (
       <div className="app">
-        <Route exact path="/search" render={() => <SearchBooks books={this.state.books}/>}/>
+        <Route exact path="/search" render={() => <SearchBooks books={this.state.bookSearchList} searchBook={this.searchBook.bind(this)}/>}/>
         <Route exact path="/" render={() => 
           <div className="list-books">
               <div className="list-books-title">
