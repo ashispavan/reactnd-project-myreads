@@ -9,7 +9,7 @@ class Book extends Component{
     }
     
     state = {
-        selectedShelf: ''
+        selectedShelf: this.props.book.shelf
     }
 
     componentDidMount() {
@@ -34,7 +34,6 @@ class Book extends Component{
 
     render() {
         const {book} = this.props;
-        debugger
         return (
             <li key={uuid()}>
                 <div className="book">

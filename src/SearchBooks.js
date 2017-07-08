@@ -10,8 +10,14 @@ class SearchBooks extends Component {
     }
 
     onQueryChange(event) {      
-        this.setState({query: event.target.value});
-        this.props.searchBook(event.target.value);
+        const searchTerm = event.target.value;
+        this.setState({query: searchTerm});
+        if (searchTerm){
+            this.props.searchBook(searchTerm);
+        }
+        else {
+            this.clearBookList();
+        }      
     }
 
     clearBookList() {

@@ -4,32 +4,30 @@ import './App.css';
 import {Link, Route} from 'react-router-dom';
 import SearchBooks from './SearchBooks';
 import BookShelf from './BookShelf';
+import _ from 'lodash';
 
 class BooksApp extends React.Component {
+  
+  constructor(props){
+    super(props);
+
+    this.searchBook = _.debounce(this.searchBook, 300);
+  }
+  
   state = {
     books: [],
-    currentList: [],
-    wantToReadList: [],
-    readList: [],
     bookSearchList: []
   }
 
   componentDidMount() {
-    debugger
     BooksAPI.getAll().then(books => {
-      const currentList = books.filter(book => book.shelf === 'currentlyReading');
-      const wantToReadList = books.filter(book => book.shelf === 'wantToRead');
-      const readList = books.filter(book => book.shelf === 'read');
       this.setState({ 
-        books: books,
-        currentList: currentList,
-        wantToReadList: wantToReadList,
-        readList: readList
+        books: books
       });
-    }
-    )
-
+    })
   }
+
+
 
   searchBook(query) {
     BooksAPI.search(query).then(books => {
@@ -42,13 +40,27 @@ class BooksApp extends React.Component {
   }
 
   updateBookShelf(book, shelf) {
-    BooksAPI.update(book, shelf);
+    BooksAPI.update(book, shelf).then(() => {
+      const updatedBook = this.state.books.filter(item => item.id === book.id)[0];
+      const restOfBooks = this.state.books.filter(item => item.id !== book.id);
+      const bookToAdd =  updatedBook ? updatedBook : book;
+      bookToAdd.shelf = shelf;
+      this.setState({
+        books: restOfBooks.concat([bookToAdd])
+      })
+    }
+
+    );
   }
   
 
   render() {
+
+    const {books} = this.state;
+    const currentList = books.filter(book => book.shelf === 'currentlyReading');
+    const wantToReadList = books.filter(book => book.shelf === 'wantToRead');
+    const readList = books.filter(book => book.shelf === 'read');
     
-    const {currentList, wantToReadList, readList} = this.state;
     return (
       <div className="app">
         <Route exact path="/search" render={({history}) => <SearchBooks history={history} updateBookShelf={this.updateBookShelf.bind(this)} books={this.state.bookSearchList} 
