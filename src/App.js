@@ -15,6 +15,7 @@ class BooksApp extends React.Component {
   }
 
   componentDidMount() {
+    debugger
     BooksAPI.getAll().then(books => {
       const currentList = books.filter(book => book.shelf === 'currentlyReading');
       const wantToReadList = books.filter(book => book.shelf === 'wantToRead');
@@ -35,6 +36,14 @@ class BooksApp extends React.Component {
       this.setState({bookSearchList: books ? books : {error: 'No books found'}});
     })
   }
+
+  clearBookList() {
+    this.setState({bookSearchList: []});
+  }
+
+  updateBookShelf(book, shelf) {
+    BooksAPI.update(book, shelf);
+  }
   
 
   render() {
@@ -42,16 +51,17 @@ class BooksApp extends React.Component {
     const {currentList, wantToReadList, readList} = this.state;
     return (
       <div className="app">
-        <Route exact path="/search" render={() => <SearchBooks books={this.state.bookSearchList} searchBook={this.searchBook.bind(this)}/>}/>
-        <Route exact path="/" render={() => 
+        <Route exact path="/search" render={({history}) => <SearchBooks history={history} updateBookShelf={this.updateBookShelf.bind(this)} books={this.state.bookSearchList} 
+        searchBook={this.searchBook.bind(this)} clearBookList={this.clearBookList.bind(this)}/>}/>
+        <Route exact path="/" render={({history}) => 
           <div className="list-books">
               <div className="list-books-title">
                 <h1>MyReads</h1>
               </div>
             <div className="list-books-content">
-              <BookShelf title="Currently Reading" bookList={currentList}/>
-              <BookShelf title="Want to Read"  bookList={wantToReadList} />
-              <BookShelf title="Read"  bookList={readList} />
+              <BookShelf title="Currently Reading" history={history} bookList={currentList} selectedShelf='currentlyReading' updateBookShelf={this.updateBookShelf.bind(this)}/>
+              <BookShelf title="Want to Read" history={history}  bookList={wantToReadList} selectedShelf='wantToRead' updateBookShelf={this.updateBookShelf.bind(this)}/>
+              <BookShelf title="Read"  history={history} bookList={readList} selectedShelf='read' updateBookShelf={this.updateBookShelf.bind(this)} />
             </div>
 
             <div className="open-search">
