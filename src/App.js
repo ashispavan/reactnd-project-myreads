@@ -47,7 +47,8 @@ class BooksApp extends React.Component {
       bookToAdd.shelf = shelf;
       this.setState({
         books: restOfBooks.concat([bookToAdd])
-      })
+      });
+      this.clearBookList();
     }
 
     );
@@ -63,7 +64,7 @@ class BooksApp extends React.Component {
     
     return (
       <div className="app">
-        <Route exact path="/search" render={({history}) => <SearchBooks history={history} updateBookShelf={this.updateBookShelf.bind(this)} books={this.state.bookSearchList} 
+        <Route exact path="/search" render={({history}) => <SearchBooks booksInShelf={books} history={history} updateBookShelf={this.updateBookShelf.bind(this)} books={this.state.bookSearchList} 
         searchBook={this.searchBook.bind(this)} clearBookList={this.clearBookList.bind(this)}/>}/>
         <Route exact path="/" render={({history}) => 
           <div className="list-books">

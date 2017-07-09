@@ -16,19 +16,26 @@ class Book extends Component{
         const selectedShelf = this.state.selectedShelf ? this.state.selectedShelf: this.props.selectedShelf;
         this.setState({
             selectedShelf: selectedShelf
-        })
+        });
+        const {book, booksInShelf} = this.props;
+        const bookInShelf = booksInShelf ? booksInShelf.filter(item => item.id === book.id)[0] : '';
+        if (bookInShelf) {
+            this.setState({selectedShelf: bookInShelf.shelf})
+        }
     }
     
 
     updateBookShelf(book, event) {
         const updatedBookShelf = event.target.value;
-        this.setState({
-            selectedShelf: updatedBookShelf
-        });
+        if (updatedBookShelf !== 'none') {
+            this.setState({
+                selectedShelf: updatedBookShelf
+            });
 
-        this.props.updateBookShelf(book, updatedBookShelf);
+            this.props.updateBookShelf(book, updatedBookShelf);
+        }
+
         this.props.history.push('/');
-
     }
 
 

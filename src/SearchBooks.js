@@ -25,7 +25,8 @@ class SearchBooks extends Component {
     }
 
     render() {
-        const {books, updateBookShelf, history} = this.props;
+        const {books, updateBookShelf, history, booksInShelf} = this.props;
+        
         return (
             <div className="search-books">
                 <div className="search-books-bar">
@@ -37,7 +38,7 @@ class SearchBooks extends Component {
                 <div className="search-books-results">
                     <ol className="books-grid">
                     {!books.error && books.map(book => 
-                        <Book key={uuid()} history={history} book={book} selectedShelf='none' updateBookShelf={updateBookShelf}/>
+                        <Book key={uuid()} booksInShelf={booksInShelf} history={history} book={book} selectedShelf='none' updateBookShelf={updateBookShelf}/>
                     )}
                     {books.error && 
                         <p>No books found</p>
