@@ -33,7 +33,6 @@ class Book extends Component{
 
             this.props.updateBookShelf(book, updatedBookShelf);
         }
-        this.props.history.push('/');
     }
 
     render() {

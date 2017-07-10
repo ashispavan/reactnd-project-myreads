@@ -48,9 +48,7 @@ class BooksApp extends React.Component {
       this.setState({
         books: restOfBooks.concat([bookToAdd])
       });
-      this.clearBookList();
     }
-
     );
   }
   
