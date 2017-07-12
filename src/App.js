@@ -1,16 +1,16 @@
 import React from 'react';
 import * as BooksAPI from './BooksAPI';
 import './App.css';
-import {Link, Route} from 'react-router-dom';
+import {Link, Route, Switch} from 'react-router-dom';
 import SearchBooks from './SearchBooks';
 import BookShelf from './BookShelf';
 import _ from 'lodash';
+import NoMatch from './NoMatch';
 
-class BooksApp extends React.Component {
+class App extends React.Component {
   
-  constructor(props){
-    super(props);
-
+  constructor(){
+    super();
     this.searchBook = _.debounce(this.searchBook, 300);
   }
   
@@ -26,8 +26,6 @@ class BooksApp extends React.Component {
       });
     })
   }
-
-
 
   searchBook(query) {
     BooksAPI.search(query).then(books => {
@@ -52,16 +50,15 @@ class BooksApp extends React.Component {
     );
   }
   
-
   render() {
 
     const {books} = this.state;
     const currentList = books.filter(book => book.shelf === 'currentlyReading');
     const wantToReadList = books.filter(book => book.shelf === 'wantToRead');
-    const readList = books.filter(book => book.shelf === 'read');
-    
+    const readList = books.filter(book => book.shelf === 'read');  
     return (
       <div className="app">
+      <Switch>
         <Route exact path="/search" render={({history}) => <SearchBooks booksInShelf={books} history={history} updateBookShelf={this.updateBookShelf.bind(this)} books={this.state.bookSearchList} 
         searchBook={this.searchBook.bind(this)} clearBookList={this.clearBookList.bind(this)}/>}/>
         <Route exact path="/" render={({history}) => 
@@ -70,9 +67,9 @@ class BooksApp extends React.Component {
                 <h1>MyReads</h1>
               </div>
             <div className="list-books-content">
-              <BookShelf title="Currently Reading" history={history} bookList={currentList} selectedShelf='currentlyReading' updateBookShelf={this.updateBookShelf.bind(this)}/>
-              <BookShelf title="Want to Read" history={history}  bookList={wantToReadList} selectedShelf='wantToRead' updateBookShelf={this.updateBookShelf.bind(this)}/>
-              <BookShelf title="Read"  history={history} bookList={readList} selectedShelf='read' updateBookShelf={this.updateBookShelf.bind(this)} />
+              <BookShelf title="Currently Reading" history={history} bookList={currentList}  updateBookShelf={this.updateBookShelf.bind(this)}/>
+              <BookShelf title="Want to Read" history={history}  bookList={wantToReadList}  updateBookShelf={this.updateBookShelf.bind(this)}/>
+              <BookShelf title="Read"  history={history} bookList={readList} updateBookShelf={this.updateBookShelf.bind(this)} />
             </div>
 
             <div className="open-search">
@@ -82,6 +79,8 @@ class BooksApp extends React.Component {
         }
         
         />
+        <Route component={NoMatch}/>
+      </Switch>
       </div>
 
         )
@@ -89,4 +88,4 @@ class BooksApp extends React.Component {
 
 }
 
-export default BooksApp;
+export default App;

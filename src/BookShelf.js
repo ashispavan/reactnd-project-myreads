@@ -1,23 +1,23 @@
-import React, {Component} from 'react';
+import React from 'react';
 import Book from './Book';
 import uuid from 'uuid';
 
-class BookShelf extends Component {
-    render() {
-      const {title, bookList, updateBookShelf, history} = this.props;
+const BookShelf = (props) => {
+
+      const {title, bookList, updateBookShelf, history} = props;
         return(
             <div className="bookshelf">
                   <h2 className="bookshelf-title">{title}</h2>
                   <div className="bookshelf-books">
                     <ol className="books-grid">
                       {bookList.map(book => 
-                            <Book key={uuid()} history={history} updateBookShelf={updateBookShelf} book={book} selectedShelf={this.props.selectedShelf}/>                                    
+                            <Book key={uuid()} history={history} updateBookShelf={updateBookShelf} book={book} />                                    
                       )}
                     </ol>
                   </div>
             </div>
         );
-    }
+    
 }
 
 export default BookShelf;

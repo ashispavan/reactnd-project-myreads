@@ -7,43 +7,36 @@ class Book extends Component{
         super(props);
         this.updateBookShelf = this.updateBookShelf.bind(this);
     }
-    
-    state = {
-        selectedShelf: this.props.book.shelf
-    }
 
+    state = {
+        displayedBook: this.props.book
+    }
+    
     componentDidMount() {
-        const selectedShelf = this.state.selectedShelf ? this.state.selectedShelf: this.props.selectedShelf;
-        this.setState({
-            selectedShelf: selectedShelf
-        });
         const {book, booksInShelf} = this.props;
         const bookInShelf = booksInShelf ? booksInShelf.filter(item => item.id === book.id)[0] : '';
         if (bookInShelf) {
-            this.setState({selectedShelf: bookInShelf.shelf})
+            book.shelf = bookInShelf.shelf;
+            this.setState({
+                displayedBook: book
+            });
         }
     }
     
     updateBookShelf(book, event) {
         const updatedBookShelf = event.target.value;
-        if (updatedBookShelf !== 'none') {
-            this.setState({
-                selectedShelf: updatedBookShelf
-            });
-
-            this.props.updateBookShelf(book, updatedBookShelf);
-        }
+        this.props.updateBookShelf(book, updatedBookShelf);  
     }
 
     render() {
-        const {book} = this.props;
+        const book = this.state.displayedBook;
         return (
             <li key={uuid()}>
                 <div className="book">
                     <div className="book-top">
                         <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks ? book.imageLinks.thumbnail: ''})` }}></div>
                         <div className="book-shelf-changer">
-                        <select value={this.state.selectedShelf} onChange={(event) => this.updateBookShelf(book, event)}>
+                        <select value={book.shelf} onChange={(event) => this.updateBookShelf(book, event)}>
                             <option value="none" disabled>Move to...</option>
                             <option value="currentlyReading">Currently Reading</option>
                             <option value="wantToRead">Want to Read</option>
